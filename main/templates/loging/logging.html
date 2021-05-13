@@ -1,0 +1,37 @@
+{% extends 'main/layout.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2"></h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group mr-1">
+          </div>
+        </div>
+      </div>
+
+<table class="table">
+        <thead class="thead-inverse">
+          <tr>
+            <th>Идентификатор пользователя</th>
+            <th>Что добавленно</th>
+            <th>Дата и время</th>
+            <th>Действие</th>
+
+          </tr>
+        </thead>
+        <tbody>
+{% for logging_count in logging_counts %}
+  <tr>
+    <td>{{ logging_count.user }}</td>
+    <td>{{ logging_count.object_repr }}</td>
+    <td>{{ logging_count.action_time }}</td>
+    <td>{{ logging_count.change_message }}</td>
+  </tr>
+
+{% endfor %}
+
+          </tbody>
+         </table>
+
+
+{% endblock content %}
