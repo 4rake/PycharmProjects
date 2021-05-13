@@ -21,6 +21,11 @@ import xlwt
 from django.core.mail import send_mail
 from django.contrib.admin.models import LogEntry
 
+from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
+from django.db.models import Sum
+
 def index(request):
     data = {
         'title': 'Главная страница'
@@ -49,6 +54,29 @@ def export_excel(request):
             ws.write(row_num, col_num, str(row[col_num]), font_style)
     wb.save(response)
     return response
+
+def export_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=Group_name' + \
+        str(datetime.now()) + '.pdf'
+    response['Content-Transfer-Encoding'] = 'binary'
+
+    #sum = group_name.aggregate(Sum('amount'))
+
+    html_string = render_to_string(
+        'group_name/pdf-output.html', {'group_name': [], 'total': sum})
+    html = HTML(string=html_string)
+
+    result = html.write_pdf()
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        #output = open(output.name, 'r b')
+        response.write(output.read())
+
+    return response
+
 
 def diary(request):
     return render(request, "diary/diary.html")
@@ -166,6 +194,27 @@ def create_information(request):
     context = {'form':form}
     return render(request, 'information/create_information.html', context)
 
+def update_information(request, pk):
+    information = Information.objects.get(id=pk)
+
+    form = InformationForm(instance=position)
+
+    if request.method == 'POST':
+        form = InformationForm(request.POST, instance=information)
+        if form.is_valid():
+            form.save()
+            return redirect('information')
+    context = {'form':form}
+
+    return render(request, 'information/update_information.html', context)
+
+def delete_information(request, pk):
+    information = Information.objects.get(id=pk)
+    if request.method == "POST":
+        information.delete()
+        return redirect('information')
+    return render(request, 'information/delete_information.html')
+
 def update_employee(request, pk):
 
     user_profiile = UserProfile.objects.get(id=pk)
@@ -231,7 +280,7 @@ def update_homework(request, pk):
 def delete_homework(request, pk):
     homework = Homework.objects.get(id=pk)
     if request.method == "POST":
-        group_name.delete()
+        homework.delete()
         return redirect('homework')
     return render(request, 'homework/delete_homework.html')
 
@@ -301,27 +350,7 @@ def delete_position(request, pk):
     return render(request, 'position/delete_position.html')
 
 
-def update_information(request, pk):
 
-    information = Information.objects.get(id=pk)
-
-    form = InformationForm(instance=position)
-
-    if request.method == 'POST':
-        form = InformationForm(request.POST, instance=information)
-        if form.is_valid():
-            form.save()
-            return redirect('information')
-    context = {'form':form}
-
-    return render(request, 'information/update_information.html', context)
-
-def delete_information(request, pk):
-    information = Information.objects.get(id=pk)
-    if request.method == "POST":
-        information.delete()
-        return redirect('information')
-    return render(request, 'information/delete_information.html')
 
 def discipline(request):
     discipline = Discipline.objects.all()

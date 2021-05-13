@@ -73,6 +73,9 @@ urlpatterns = [
      name="password_reset_confirm"),
 
     path('export_excel', views.export_excel, name="export-excel"),
+    path('export_pdf', views.export_pdf, name="export-pdf"),
+
+
 
     path('reset_password_complete/',
         auth_views.PasswordResetCompleteView.as_view(template_name="accounts/password_reset_done.html"),

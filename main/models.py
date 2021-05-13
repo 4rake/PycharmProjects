@@ -103,6 +103,7 @@ class Homework(models.Model):
     """Информация"""
     title = models.CharField(verbose_name="Заголовок", max_length=100)
     description = models.TextField(verbose_name="Описание")
+    file = models.FileField(null=True, blank=True)
     date_of_deliviri = models.DateTimeField(verbose_name="Дата назначения работы")
     appointment_date = models.DateTimeField(verbose_name="Дата сдачи работы")
 
@@ -133,7 +134,7 @@ class Information(models.Model):
     """Информация"""
     title = models.CharField("Заголовок", max_length=100)
     description = models.TextField(verbose_name="Описание")
-    image = models.ImageField(verbose_name="Изображение", upload_to="information_shots/", blank=True)
+    image = models.FileField(verbose_name="Изображение", null=True, blank=True)
 
     def __str__(self):
         return self.title

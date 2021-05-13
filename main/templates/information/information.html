@@ -21,7 +21,9 @@
         <td>{{ information.title }}</td>
         <td>{{ information.description }}</td>
         <td>{{ information.image }}</td>
-         <td><a href="{% url 'update_information' information.id %}">Изменить</a> </td>
+        <td><a href="{% url 'update_information' information.id %}">Изменить</a> </td>
+        <td><a href="{% url 'delete_information' information.id %}">Удалить</a> </td>
+
         </tr>
         {% endfor %}
     </table>
