@@ -18,9 +18,11 @@ urlpatterns = [
     path('update_student/<str:pk>/', views.update_student, name='update_student'),
     path('delete_student/<str:pk>/', views.delete_student, name='delete_student'),
 
-   path('diary', views.diary, name='diary'),
+    path('diary/<str:pk>/', views.diary, name='diary'),
 
     path('personal_area', views.personal_area, name='personal_area'),
+
+    path('distribution', views.distribution, name='distribution'),
 
     path('user_profile', views.user_profiile, name='user_profile'),
 
@@ -75,7 +77,10 @@ urlpatterns = [
     path('export_excel', views.export_excel, name="export-excel"),
     path('export_pdf', views.export_pdf, name="export-pdf"),
 
-
+    path('attendance', views.attendance, name='attendance'),
+    path('create_attendance', views.create_attendance, name='create_attendance'),
+    path('update_attendance/<str:pk>/', views.update_attendance, name='update_attendance'),
+    path('delete_attendance/<str:pk>/', views.delete_attendance, name='delete_attendance'),
 
     path('reset_password_complete/',
         auth_views.PasswordResetCompleteView.as_view(template_name="accounts/password_reset_done.html"),

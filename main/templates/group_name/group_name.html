@@ -12,6 +12,8 @@
 <tr>
      <th>Название группы</th>
     <th>Описание</th>
+    <th>Курс</th>
+    <th>Дисциплина</th>
     <th>Изменение данных</th>
     <th>Удаление данных</th>
 
@@ -20,6 +22,8 @@
         <tr>
         <td>{{ group_name.name }}</td>
         <td>{{ group_name.description }}</td>
+        <td>{{ group_name.course }}</td>
+        <td>{{ group_name.fk_discipline.all|join:", " }}</td>
          <td><a href="{% url 'update_group_name' group_name.id %}">Изменить</a> </td>
          <td><a href="{% url 'delete_group_name' group_name.id %}">Удалить</a> </td>
         </tr>

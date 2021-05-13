@@ -90,9 +90,8 @@
           <a class="nav-link active" aria-current="page" href="{% url 'discipline' %}">Дисциплины</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'diary' %}">Дневник</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'diary' request.user.id %}">Дневник</a>
         </li>
-
           <li class="nav-item">
         </li>
           <li class="nav-item">
@@ -135,8 +134,9 @@
 
 </body>
 <footer class="footer">
-    <div style='text-align:center; width:100%; '><a></a>
+    <div style='text-align:center; width:100%;'><a></a>
     <a class="nav-link active" aria-current="page"  href="{% url 'contact' %}">Обратная связь</a>
     </div>
 </footer>
+
 </html>

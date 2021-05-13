@@ -1,0 +1,29 @@
+{% extends 'main/layout.html' %}
+{% block content %}
+    <h1>Посещаемость</h1>
+    <hr>
+        <a class="btn btn-primary" href="{% url 'create_attendance' %}">Добавить данные</a>
+        <br>
+    <br>
+
+<table class="table table-striped">
+<tr>
+    <th>Студент</th>
+    <th>Дисциплина</th>
+    <th>Дата посещения</th>
+    <th>Присутствие на занятии</th>
+    <th>Изменение данных</th>
+    <th>Удаление данных</th>
+</tr>
+        {% for attendance in attendance %}
+        <tr>
+        <td>{{ attendance.fk_student.all|join:", "  }}</td>
+        <td>{{ attendance.fk_discipline }}</td>
+        <td>{{ attendance.date_of_visit }}</td>
+        <td>{{ attendance.presence }}</td>
+        <td><a href="{% url 'update_attendance' attendance.id %}">Изменить</a> </td>
+        <td><a href="{% url 'delete_attendance' attendance.id %}">Удалить</a> </td>
+        </tr>
+        {% endfor %}
+    </table>
+            {% endblock content %}

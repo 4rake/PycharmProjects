@@ -14,7 +14,7 @@
     <th>Описание работы</th>
     <th>Дата назначения работы</th>
     <th>Дата сдачи работы</th>
-    <th>Прикрепленный документ</th>
+    <th>Группа</th>
     <th>Изменение данных</th>
     <th>Удаление данных</th>
 
@@ -25,9 +25,9 @@
         <td>{{ homework.description }}</td>
         <td>{{ homework.date_of_deliviri }}</td>
         <td>{{ homework.appointment_date }}</td>
-        <td>{{ homework.file }}</td>
-         <td><a href="{% url 'update_homework' homework.id %}">Изменить</a> </td>
-         <td><a href="{% url 'delete_homework' homework.id %}">Удалить</a> </td>
+        <td>{{ homework.fk_group.all|join:", "  }}</td>
+        <td><a href="{% url 'update_homework' homework.id %}">Изменить</a> </td>
+        <td><a href="{% url 'delete_homework' homework.id %}">Удалить</a> </td>
 
         </tr>
         {% endfor %}

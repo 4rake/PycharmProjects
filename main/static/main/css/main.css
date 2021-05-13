@@ -1,6 +1,10 @@
 
 body
     {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   margin: 0;
   padding: 0;
   background: #232323;
@@ -767,4 +771,17 @@ td, th {
     }
     {
 
+}
+.loader {
+    width: 75px;
+    height: 75px;
+    border: 10px solid rgba(129, 129, 130, 0.6);
+    border-radius: 50%;
+    border-left-color: #818182 ;
+    animation: loader 1.3s linear infinite;
+}
+@keyframes loader {
+    100% {
+    transform: rotate(360deg);
+    }
 }

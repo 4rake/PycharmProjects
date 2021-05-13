@@ -12,7 +12,7 @@ from django.contrib.admin import widgets
 class StudentForm(ModelForm):
     class Meta:
         model = Student
-        fields = ('name', 'surname', 'middle_name', 'date_of_birth', 'course', 'number', 'group',)
+        fields = ('name', 'surname', 'middle_name', 'date_of_birth', 'number', 'group',)
 
 
 class UserProfileForm(ModelForm):
@@ -42,14 +42,25 @@ class PositionForm(ModelForm):
 class Grop_nameForm(ModelForm):
     class Meta:
         model = Group_name
-        fields = ('name', 'description',)
+        fields = ('name', 'description', 'course', 'fk_discipline')
 
 
+class DistributionForm(ModelForm):
+    class Meta:
+        model = Distribution
+        fields = ('fk_discipline', 'fk_userprofile', 'fk_group_name')
 
 class HomeworkForm(ModelForm):
     class Meta:
         model = Homework
-        fields = ('title', 'description', 'date_of_deliviri', 'appointment_date')
+        fields = ('title', 'description', 'date_of_deliviri', 'appointment_date', 'fk_group')
+
+
+
+class AttendanceForm(ModelForm):
+    class Meta:
+        model = Attendance
+        fields = ('fk_student', 'fk_discipline', 'date_of_visit', 'presence')
 
 
 class Homework_checkForm(ModelForm):
@@ -69,6 +80,10 @@ class DisciplineForm(ModelForm):
         fields = ('name', 'description',)
 
 
+class DiaryForm(ModelForm):
+    class Meta:
+        model = Diary
+        fields = ('fk_student', 'fk_discipline', 'fk_homework_check',)
 
 class CreateUserForm(UserCreationForm):
 	class Meta:

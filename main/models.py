@@ -1,3 +1,4 @@
+import presence as presence
 from django.db import models
 from datetime import date
 from import_export.admin import ImportExportModelAdmin
@@ -36,12 +37,13 @@ class Discipline(models.Model):
     name = models.CharField(verbose_name="Название дисциплины", max_length=50)
     description = models.TextField(verbose_name="Описание")
 
-    def unicode(self):
-        return self.name
 
     class Meta:
         verbose_name = 'Дисциплина'
         verbose_name_plural = 'Дисциплины'
+
+    def __str__(self):
+        return self.name
 
 class UserProfile(models.Model):
 
@@ -52,12 +54,11 @@ class UserProfile(models.Model):
     date_of_birth = models.DateField(verbose_name="Дата рождения", default=0)
     description = models.TextField(verbose_name="Описание")
     image = models.ImageField(verbose_name="Изображение", blank=True, null=True)
-    fk_position = models.ForeignKey(Position, on_delete=models.CASCADE, verbose_name="Должность")
+    fk_position = models.ForeignKey(Position, on_delete=models.CASCADE, verbose_name="Должность", blank=True, null=True)
     fk_accses = models.ForeignKey(Access, on_delete=models.CASCADE, verbose_name="Доступ")
-    fk_discipline = models.ManyToManyField('Discipline', verbose_name="Дисциплина")
 
-    def unicode(self):
-        return self.user
+    def __str__(self):
+        return self.surname
 
     class Meta:
         verbose_name = 'Сотрудник'
@@ -67,11 +68,11 @@ class UserProfile(models.Model):
 
 class Student(models.Model):
     """Студенты"""
+    #user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(verbose_name="Имя", max_length=50)
     surname = models.CharField(verbose_name="Фамилия", max_length=50)
     middle_name = models.CharField(verbose_name="Отчество", max_length=50, default='Отсутсвут', null=True, blank=True)
     date_of_birth = models.DateField(verbose_name="Дата рождения", default=0)
-    course = models.IntegerField(verbose_name="Курс", default=0)
     number = models.CharField(verbose_name="Номер билета", max_length=50, null=True)
     group = models.ForeignKey('Group_name', verbose_name="Название группы", on_delete=models.PROTECT)
 
@@ -89,6 +90,7 @@ class Group_name(models.Model):
     """Группы"""
     name = models.TextField(verbose_name="Название группы", max_length=100, unique=True)
     description = models.TextField(verbose_name="Описание", max_length=100,)
+    course = models.IntegerField(verbose_name="Курс", default=0)
     fk_discipline = models.ManyToManyField('Discipline', verbose_name="Дисциплина")
 
 
@@ -99,6 +101,16 @@ class Group_name(models.Model):
         verbose_name = "Группа"
         verbose_name_plural = "Группы"
 
+class Distribution(models.Model):
+    """Группы"""
+    fk_discipline = models.ForeignKey('Discipline', verbose_name="Дисциплина", on_delete=models.PROTECT)
+    fk_userprofile = models.ForeignKey('UserProfile', verbose_name="Преподаватель", on_delete=models.PROTECT)
+    fk_group_name = models.ForeignKey('Group_name', verbose_name="Группы", on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = "Распределение"
+        verbose_name_plural = "Распределения"
+
 class Homework(models.Model):
     """Информация"""
     title = models.CharField(verbose_name="Заголовок", max_length=100)
@@ -106,6 +118,7 @@ class Homework(models.Model):
     file = models.FileField(null=True, blank=True)
     date_of_deliviri = models.DateTimeField(verbose_name="Дата назначения работы")
     appointment_date = models.DateTimeField(verbose_name="Дата сдачи работы")
+    fk_group = models.ManyToManyField('Group_name', verbose_name="Группа")
 
     def __str__(self):
         return self.title
@@ -118,7 +131,7 @@ class Homework(models.Model):
 class Homework_check(models.Model):
     """Проверка домашней работы"""
     assessment = models.CharField(verbose_name="Оценка", max_length=1)
-    fk_employee = models.ForeignKey(UserProfile, verbose_name="Сотрудник", on_delete=models.PROTECT)
+    fk_employee = models.ForeignKey(User, verbose_name="Сотрудник", on_delete=models.PROTECT)
     fk_homework = models.ForeignKey(Homework, verbose_name="Домашняя работа", on_delete=models.PROTECT)
     fk_student = models.ManyToManyField(Student, verbose_name="Студент")
 
@@ -146,12 +159,32 @@ class Information(models.Model):
 
 class Diary(models.Model):
 
-    def __str__(self):
-        return self.fk_student
     fk_student = models.ForeignKey(Student, verbose_name="Студент", on_delete=models.PROTECT)
     fk_discipline = models.ForeignKey(Discipline, verbose_name="Дисциплина", on_delete=models.PROTECT)
     fk_homework_check = models.ForeignKey(Homework_check, verbose_name="Работа", on_delete=models.PROTECT)
 
+    def __str__(self):
+        return self.fk_student
+
     class Meta:
         verbose_name = "Дневник"
         verbose_name_plural = "Дневник"
+
+presence = [
+    ("Да", "Присутствует"),
+    ("Нет", "Отсутствует")
+]
+
+class Attendance(models.Model):
+
+    fk_student = models.ManyToManyField(Student, verbose_name="Студент")
+    fk_discipline = models.ForeignKey(Discipline, verbose_name="Дисциплина", on_delete=models.PROTECT)
+    date_of_visit = models.DateTimeField(verbose_name="Дата проведения занятия")
+    presence = models.CharField(max_length=3, choices=presence, verbose_name="Присутсвие на занятии")
+
+    def __str__(self):
+        return self.fk_student
+
+    class Meta:
+        verbose_name = "Посещаемость"
+        verbose_name_plural = "Посещаемость"

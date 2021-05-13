@@ -16,6 +16,7 @@ from io import BytesIO
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.views import View
+from django.db.models import Q
 from .filters import StudentFilter
 import xlwt
 from django.core.mail import send_mail
@@ -42,12 +43,12 @@ def export_excel(request):
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ['name', 'description']
+    columns = ['name', 'description', 'course', 'fk_discipline']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
     font_style = xlwt.XFStyle()
-    rows = Group_name.objects.all().values_list('name', 'description')
+    rows = Group_name.objects.all().values_list('name', 'description', 'course', 'fk_discipline')
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):
@@ -78,8 +79,20 @@ def export_pdf(request):
     return response
 
 
-def diary(request):
-    return render(request, "diary/diary.html")
+def diary(request, pk):
+    homework_check = Homework_check.objects.filter(Q(fk_employee=pk))
+
+    return render(request, "diary/diary.html", {"homework_check": homework_check})
+
+#def create_diary(request):
+    #form = DiaryForm()
+    #if request.method == 'POST':
+    #    form = DiaryForm(request.POST)
+    #    if form.is_valid():
+    #        form.save()
+    #        return redirect('diary')
+    #context = {'form':form}
+    #return render(request, 'diary/create_diary.html', context)
 
 def about(request):
     return render(request, "main/about.html")
@@ -101,6 +114,10 @@ def cr_st(request):
     context = {'form':form}
     return render(request, 'student/cr_st.html', context)
 
+
+def distribution(request):
+    group_name = Group_name.objects.all()
+    return render(request, "distribution/distribution.html", {"group_name": group_name})
 
 def authorization(request):
     return render(request, "main/authorization.html")
@@ -159,6 +176,7 @@ def create_homework(request):
     if request.method == 'POST':
         form = HomeworkForm(request.POST)
         if form.is_valid():
+
             form.save()
             return redirect('homework')
     context = {'form':form}
@@ -452,5 +470,43 @@ def contact(request):
 @login_required(login_url='login')
 def logging_action(request):
     logging_count = LogEntry.objects.all()
-    context = {'logging_counts':logging_count}
+    context = {'logging_counts': logging_count}
     return render(request, 'loging/logging.html', context=context)
+
+
+def attendance(request):
+    attendance = Attendance.objects.all()
+    return render(request, "attendance/attendance.html", {"attendance": attendance})
+
+def create_attendance(request):
+    form = AttendanceForm()
+    if request.method == 'POST':
+        form = AttendanceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('attendance')
+    context = {'form':form}
+    return render(request, 'attendance/create_attendance.html', context)
+
+
+def update_attendance(request, pk):
+    attendance = Attendance.objects.get(id=pk)
+
+    form = AttendanceForm(instance=position)
+
+    if request.method == 'POST':
+        form = AttendanceForm(request.POST, instance=attendance)
+        if form.is_valid():
+            form.save()
+            return redirect('attendance')
+    context = {'form': form}
+
+    return render(request, 'attendance/update_attendance.html', context)
+
+
+def delete_attendance(request, pk):
+    attendance = Attendance.objects.get(id=pk)
+    if request.method == "POST":
+        attendance.delete()
+        return redirect('attendance')
+    return render(request, 'attendance/delete_attendance.html')

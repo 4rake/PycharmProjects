@@ -20,10 +20,21 @@
 </tr>
         {% for homework_check in homework_check %}
         <tr>
-        <td>{{ homework_check.assessment }}</td>
-        <td>{{ homework_check.fk_employee.name }}</td>
+        <td>
+            {{ homework_check.assessment }}
+        </td>
+        <td> {% if homework_check.fk_employee.first_name %}
+
+            {{ homework_check.fk_employee.first_name }}
+            {{ homework_check.fk_employee.last_name }}
+
+            {{ homework_check.fk_employee.lastname }}
+            {% else %}
+            {{ homework_check.fk_homework.user.username }}
+        {% endif %}
+        </td>
         <td>{{ homework_check.fk_homework }}</td>
-        <td> {% for student in homework_check.fk_student.all %} {{ student.name }} {% endfor %}</td>
+        <td>{{ homework_check.fk_student.all|join:", " }}</td>
          <td><a href="{% url 'update_homework_check' homework_check.id %}">Изменить</a> </td>
          <td><a href="{% url 'delete_homework_check' homework_check.id %}">Удалить</a> </td>
         </tr>
