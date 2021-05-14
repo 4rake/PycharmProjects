@@ -8,3 +8,7 @@ class StudentFilter(django_filters.FilterSet):
 		model = Student
 		fields = '__all__'
 
+class AttendanceFilter(django_filters.FilterSet):
+	class Meta:
+		model = Attendance
+		fields = '__all__'

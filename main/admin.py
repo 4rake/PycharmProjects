@@ -27,9 +27,6 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ('name', 'surname', 'middle_name', 'date_of_birth', 'number', 'group', )
     list_filter = ('name', 'surname', 'middle_name', 'date_of_birth', 'number', 'group', )
 
-
-
-
 @admin.register(Information)
 class InformationAdmin(admin.ModelAdmin):
     fields = ('title', 'description', 'image', )
@@ -50,22 +47,39 @@ class DiaryAdmin(admin.ModelAdmin):
 
 @admin.register(Distribution)
 class DistributionAdmin(admin.ModelAdmin):
-    fields = ('fk_discipline', 'fk_userprofile', 'fk_group_name', )
-    list_display = ('fk_discipline', 'fk_userprofile', 'fk_group_name', )
-    list_filter = ('fk_discipline', 'fk_userprofile', 'fk_group_name', )
+    fields = ('fk_discipline', 'fk_employee', 'fk_group_name', )
+    list_display = ('fk_discipline', 'fk_employee', 'fk_group_name', )
+    list_filter = ('fk_discipline', 'fk_employee', 'fk_group_name', )
 
-#@admin.register(Attendance)
-#class AttendanceAdmin(admin.ModelAdmin):
-#    fields = ('fk_student', 'fk_discipline', 'date_of_visit', 'presence', )
-#    list_display = ('fk_student', 'fk_discipline', 'date_of_visit', 'presence', )
-#    list_filter = ('fk_student', 'fk_discipline', 'date_of_visit', 'presence', )
+@admin.register(Attendance)
+class AttendanceAdmin(admin.ModelAdmin):
+    fields = ('fk_student', 'fk_discipline', 'date_of_visit', 'presence', )
+    list_display = ('date_of_visit', 'presence', )
+    list_filter = ('date_of_visit', 'presence', )
+
+
+@admin.register(Homework)
+class HomeworkAdmin(admin.ModelAdmin):
+    fields = ('title', 'description', 'file', 'date_of_deliviri', 'appointment_date', 'fk_group', )
+    list_display = ('title', 'description', 'file', 'date_of_deliviri', 'appointment_date', )
+    list_filter = ('title', 'description', 'file', 'date_of_deliviri', 'appointment_date', )
+
+@admin.register(Homework_check)
+class Homework_checkAdmin(admin.ModelAdmin):
+    fields = ('assessment', 'fk_employee', 'fk_homework', 'fk_student', )
+    list_display = ('assessment', )
+    list_filter = ('assessment', )
+
+@admin.register(Group_name)
+class Group_nameAdmin(admin.ModelAdmin):
+    fields = ('name', 'description', 'course', 'fk_discipline', )
+    list_display = ('name', 'description', 'course', )
+    list_filter = ('name', 'description', 'course', )
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
-admin.site.register(Homework)
-admin.site.register(Homework_check)
-admin.site.register(Group_name)
-admin.site.register(Attendance)
+
+
 
 
 

@@ -12,6 +12,7 @@
 <tr>
      <th>Заголовок</th>
     <th>Описание работы</th>
+    <th>Файл</th>
     <th>Дата назначения работы</th>
     <th>Дата сдачи работы</th>
     <th>Группа</th>
@@ -23,6 +24,7 @@
         <tr>
         <td>{{ homework.title }}</td>
         <td>{{ homework.description }}</td>
+        <td>{{ homework.file }}
         <td>{{ homework.date_of_deliviri }}</td>
         <td>{{ homework.appointment_date }}</td>
         <td>{{ homework.fk_group.all|join:", "  }}</td>

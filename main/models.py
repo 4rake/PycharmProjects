@@ -103,20 +103,24 @@ class Group_name(models.Model):
 
 class Distribution(models.Model):
     """Группы"""
-    fk_discipline = models.ForeignKey('Discipline', verbose_name="Дисциплина", on_delete=models.PROTECT)
-    fk_userprofile = models.ForeignKey('UserProfile', verbose_name="Преподаватель", on_delete=models.PROTECT)
-    fk_group_name = models.ForeignKey('Group_name', verbose_name="Группы", on_delete=models.PROTECT)
+    fk_discipline = models.ForeignKey(Discipline, verbose_name="Дисциплина", on_delete=models.PROTECT)
+    fk_employee = models.ForeignKey(User, verbose_name="Преподаватель", on_delete=models.PROTECT)
+    fk_group_name = models.ForeignKey(Group_name, verbose_name="Группы", on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.fk_employee
 
     class Meta:
         verbose_name = "Распределение"
         verbose_name_plural = "Распределения"
+
 
 class Homework(models.Model):
     """Информация"""
     title = models.CharField(verbose_name="Заголовок", max_length=100)
     description = models.TextField(verbose_name="Описание")
     file = models.FileField(null=True, blank=True)
-    date_of_deliviri = models.DateTimeField(verbose_name="Дата назначения работы")
+    date_of_deliviri = models.DateTimeField(verbose_name="Дата назначения работы")#, auto_now_add=True
     appointment_date = models.DateTimeField(verbose_name="Дата сдачи работы")
     fk_group = models.ManyToManyField('Group_name', verbose_name="Группа")
 
@@ -170,9 +174,10 @@ class Diary(models.Model):
         verbose_name = "Дневник"
         verbose_name_plural = "Дневник"
 
+
 presence = [
-    ("Да", "Присутствует"),
-    ("Нет", "Отсутствует")
+    ("Присутствует", "Присутствует"),
+    ("Отсутствует", "Отсутствует")
 ]
 
 class Attendance(models.Model):
@@ -180,10 +185,10 @@ class Attendance(models.Model):
     fk_student = models.ManyToManyField(Student, verbose_name="Студент")
     fk_discipline = models.ForeignKey(Discipline, verbose_name="Дисциплина", on_delete=models.PROTECT)
     date_of_visit = models.DateTimeField(verbose_name="Дата проведения занятия")
-    presence = models.CharField(max_length=3, choices=presence, verbose_name="Присутсвие на занятии")
+    presence = models.CharField(max_length=12, choices=presence, verbose_name="Присутсвие на занятии")
 
-    def __str__(self):
-        return self.fk_student
+    #def __str__(self):
+    #    return self.fk_student
 
     class Meta:
         verbose_name = "Посещаемость"

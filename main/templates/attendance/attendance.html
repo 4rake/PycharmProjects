@@ -1,21 +1,34 @@
 {% extends 'main/layout.html' %}
 {% block content %}
+{% load crispy_forms_tags %}
     <h1>Посещаемость</h1>
-    <hr>
-        <a class="btn btn-primary" href="{% url 'create_attendance' %}">Добавить данные</a>
-        <br>
-    <br>
 
+    <div class="row">
+        <div class="col">
+            <div class="card card-body">
+                <div style='text-align:left; '>
+                <form method="get">
+                    {{ myattendanceFilter.form.as_p }}
+                    <hr>
+                <button class="btn btn-primary" type="submit">Поиск</button>
+</form>
+            </div>
+                </div>
+                    </div>
+                        </div>
+    <br>
+    <a class="btn btn-primary" href="{% url 'create_attendance' %}">Добавить данные</a> <a href="{% url 'export_excel-attendance' %}" class="btn btn-primary">Excel</a>
+    <hr>
 <table class="table table-striped">
 <tr>
     <th>Студент</th>
     <th>Дисциплина</th>
-    <th>Дата посещения</th>
-    <th>Присутствие на занятии</th>
+    <th>Дата проведения занятия</th>
+    <th>Посещение</th>
     <th>Изменение данных</th>
     <th>Удаление данных</th>
 </tr>
-        {% for attendance in attendance %}
+        {% for attendance in myattendanceFilter.qs %}
         <tr>
         <td>{{ attendance.fk_student.all|join:", "  }}</td>
         <td>{{ attendance.fk_discipline }}</td>

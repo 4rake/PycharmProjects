@@ -23,6 +23,10 @@ urlpatterns = [
     path('personal_area', views.personal_area, name='personal_area'),
 
     path('distribution', views.distribution, name='distribution'),
+    path('distribution/<str:pk>/', views.distribution, name='distribution'),
+    path('create_distribution', views.create_distribution, name='create_distribution'),
+    path('update_distribution/<str:pk>/', views.update_distribution, name='update_distribution'),
+    path('delete_distribution/<str:pk>/', views.delete_distribution, name='delete_distribution'),
 
     path('user_profile', views.user_profiile, name='user_profile'),
 
@@ -75,6 +79,8 @@ urlpatterns = [
      name="password_reset_confirm"),
 
     path('export_excel', views.export_excel, name="export-excel"),
+    path('export_excel_attendance', views.export_excel_attendance, name="export_excel-attendance"),
+
     path('export_pdf', views.export_pdf, name="export-pdf"),
 
     path('attendance', views.attendance, name='attendance'),

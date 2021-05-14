@@ -48,7 +48,7 @@ class Grop_nameForm(ModelForm):
 class DistributionForm(ModelForm):
     class Meta:
         model = Distribution
-        fields = ('fk_discipline', 'fk_userprofile', 'fk_group_name')
+        fields = ('fk_discipline', 'fk_employee', 'fk_group_name')
 
 class HomeworkForm(ModelForm):
     class Meta:

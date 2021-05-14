@@ -17,7 +17,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.views import View
 from django.db.models import Q
-from .filters import StudentFilter
+from .filters import *
 import xlwt
 from django.core.mail import send_mail
 from django.contrib.admin.models import LogEntry
@@ -58,14 +58,14 @@ def export_excel(request):
 
 def export_pdf(request):
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=Group_name' + \
+    response['Content-Disposition'] = 'inline; attachment; filename=Group_name' + \
         str(datetime.now()) + '.pdf'
     response['Content-Transfer-Encoding'] = 'binary'
 
     #sum = group_name.aggregate(Sum('amount'))
 
     html_string = render_to_string(
-        'group_name/pdf-output.html', {'group_name': [], 'total': sum})
+        'group_name/pdf-output.html', {'group_name': [], 'total': 0})
     html = HTML(string=html_string)
 
     result = html.write_pdf()
@@ -73,7 +73,7 @@ def export_pdf(request):
     with tempfile.NamedTemporaryFile(delete=True) as output:
         output.write(result)
         output.flush()
-        #output = open(output.name, 'r b')
+        output = open(output.name, 'rb')
         response.write(output.read())
 
     return response
@@ -115,9 +115,42 @@ def cr_st(request):
     return render(request, 'student/cr_st.html', context)
 
 
-def distribution(request):
-    group_name = Group_name.objects.all()
-    return render(request, "distribution/distribution.html", {"group_name": group_name})
+def distribution(request, pk):
+    distribution = Distribution.objects.filter(Q(fk_employee=pk))
+    return render(request, "distribution/distribution.html", {"distribution": distribution})
+
+def create_distribution(request):
+    form = DistributionForm()
+    if request.method == 'POST':
+        form = DistributionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('distribution')
+    context = {'form': form}
+    return render(request, 'distribution/create_distribution.html', context)
+
+def update_distribution(request, pk):
+    distribution = Distribution.objects.get(id=pk)
+
+    form = DistributionForm(instance=distribution)
+
+    if request.method == 'POST':
+        form = DistributionForm(request.POST, instance=distribution)
+        if form.is_valid():
+            form.save()
+            return redirect('distribution')
+    context = {'form': form}
+
+    return render(request, 'distribution/update_distribution.html', context)
+
+def delete_distribution(request, pk):
+    distribution = Distribution.objects.get(id=pk)
+    if request.method == "POST":
+        distribution.delete()
+        return redirect('distribution')
+    return render(request, 'distribution/delete_distribution.html')
+
+
 
 def authorization(request):
     return render(request, "main/authorization.html")
@@ -313,7 +346,7 @@ def update_student(request, pk):
         if form.is_valid():
             form.save()
             return redirect('student')
-    context = {'form':form}
+    context = {'form': form}
 
     return render(request, 'student/update_student.html', context)
 
@@ -323,6 +356,7 @@ def delete_student(request, pk):
         student.delete()
         return redirect('student')
     return render(request, 'student/delete_student.html')
+
 def update_homework_check(request, pk):
 
     homework_check = Homework_check.objects.get(id=pk)
@@ -476,7 +510,11 @@ def logging_action(request):
 
 def attendance(request):
     attendance = Attendance.objects.all()
-    return render(request, "attendance/attendance.html", {"attendance": attendance})
+    myattendanceFilter = AttendanceFilter(request.GET, queryset=attendance)
+    attendance = myattendanceFilter.qs
+    context = {'myFiler':myattendanceFilter, "attendance": attendance}
+    return render(request, "attendance/attendance.html", {"attendance": attendance, "myattendanceFilter":myattendanceFilter})
+
 
 def create_attendance(request):
     form = AttendanceForm()
@@ -492,7 +530,7 @@ def create_attendance(request):
 def update_attendance(request, pk):
     attendance = Attendance.objects.get(id=pk)
 
-    form = AttendanceForm(instance=position)
+    form = AttendanceForm(instance=attendance)
 
     if request.method == 'POST':
         form = AttendanceForm(request.POST, instance=attendance)
@@ -510,3 +548,26 @@ def delete_attendance(request, pk):
         attendance.delete()
         return redirect('attendance')
     return render(request, 'attendance/delete_attendance.html')
+
+
+def export_excel_attendance(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=Attendance' + \
+        str(datetime.now())+'.xls'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Attendance')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+    columns = ['fk_student', 'fk_discipline', 'date_of_visit', 'presence']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    font_style = xlwt.XFStyle()
+    rows = Attendance.objects.all().values_list('fk_student', 'fk_discipline', 'date_of_visit', 'presence')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(row[col_num]), font_style)
+    wb.save(response)
+    return response
