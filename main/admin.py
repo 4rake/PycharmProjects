@@ -9,7 +9,7 @@ from django.contrib.auth.admin import UserAdmin
 class UserInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
-    verbose_name_plural = 'Доп. информация'
+    verbose_name_plural = 'Дополнительная информация'
 
 
 class UserAdmin(UserAdmin):
@@ -27,11 +27,8 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ('name', 'surname', 'middle_name', 'date_of_birth', 'number', 'group', )
     list_filter = ('name', 'surname', 'middle_name', 'date_of_birth', 'number', 'group', )
 
-@admin.register(Information)
-class InformationAdmin(admin.ModelAdmin):
-    fields = ('title', 'description', 'image', )
-    list_display = ('title', 'description', 'image', )
-    list_filter = ('title', 'description', 'image', )
+
+admin.site.register(BlogPost)
 
 @admin.register(Access)
 class AccessAdmin(admin.ModelAdmin):
@@ -78,9 +75,6 @@ class Group_nameAdmin(admin.ModelAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
-
-
-
 
 
 resource_class = StudentResource

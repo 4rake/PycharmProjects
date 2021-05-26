@@ -12,6 +12,7 @@ urlpatterns = [
     path('registerPage', views.registerPage, name='registerPage'),
     path('loginPage', views.loginPage, name='loginPage'),
     path('logoutUser', views.logoutUser, name='logoutUser'),
+    path('auth/', include('rest_framework_social_oauth2.urls')),
 
     path('student', views.student, name='student'),
     path('cr_st', views.cr_st, name='cr_st'),
@@ -54,10 +55,10 @@ urlpatterns = [
     path('update_homework_check/<str:pk>/', views.update_homework_check, name='update_homework_check'),
     path('delete_homework_check/<str:pk>/', views.delete_homework_check, name='delete_homework_check'),
 
-    path('information', views.information, name='information'),
-    path('create_information', views.create_information, name='create_information'),
-    path('update_information/<str:pk>/', views.update_information, name='update_information'),
-    path('delete_information/<str:pk>/', views.delete_information, name='delete_information '),
+   # path('information', views.information, name='information'),
+    #path('create_information', views.create_information, name='create_information'),
+    #path('update_information/<str:pk>/', views.update_information, name='update_information'),
+    #path('delete_information/<str:pk>/', views.delete_information, name='delete_information '),
 
 
 
@@ -93,5 +94,9 @@ urlpatterns = [
         name="password_reset_complete"),
 
     path('contact', views.contact, name='contact'),
+
+    path('create_blog_view', views.create_blog_view, name='create_blog_view'),
+    path('detail_blog_view/<str:pk>/', views.detail_blog_view, name='detail_blog_view'),
+    path('edit_blog_view/<str:pk>/', views.edit_blog_view, name='edit_blog_view'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

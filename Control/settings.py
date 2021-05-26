@@ -17,7 +17,7 @@ SECRET_KEY = 'django-insecure-(cg47_8n$8(0e58geuuu+r!kli-f2+-lbp*&sue_dzc9j#1$&3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 
@@ -37,6 +37,15 @@ INSTALLED_APPS = [
     'crispy_forms',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.vk',
+    'oauth2_provider',
+    'social_django',
+    'rest_framework_social_oauth2',
+
+    'rest_framework',
+
+    'snowpenguin.django.recaptcha3',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
@@ -80,12 +89,33 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+REST_FRAMEWORK = {
+     'DEFAULT_PERMISSION_CLASSES': [
+         'rest_framework.permissions.IsAuthenticated',
+     ],
+     "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+     ],
+     "DEFAULT_AUTHENTICATION_CLASSES": [
+        #"rest_framework.authentication.SessionAuthentication",
+        #"rest_framework_simplejwt.authentication.JWTAuthentication",
+        "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
+        "rest_framework_social_oauth2.authentication.SocialAuthentication",
+     ],
+     #"AUTH_TOKEN_CLASSES": [
+     #   "rest_framework_simplejwt.tokens.AccessToken",
+     #   "rest_framework_simplejwt.tokens.SlidingToken",
+     # ]
+}
 
-AUTHENTICATION_BACKENDSTH = (
+AUTHENTICATION_BACKENDSTH = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
-)
-
+     'social_core.backends.vk.VKOAuth2',
+     'rest_framework_social_oauth2.backends.DjangoOAuth2',
+]
+SOCIAL_AUTH_VK_OAUTH2_KEY = '7864386'
+SOCIAL_AUTH_VK_OAUTH2_SECRET = 'HuXTtYrQWPYjxUQKUjKE'
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -104,6 +134,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+#CORS_ALLOW_METHOD =[
+#    "http://127.0.0.1:8000",
+#]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -147,4 +181,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'a.b.puzanov@gmail.com'
 EMAIL_HOST_PASSWORD = '527190qp'
 EMAIL_HOST_SSL = True
-#AUTH_USER_MODEL = 'users.CustomUser'
+
+RECAPTCHA_PUBLIC_KEY = "6LfCe_EaAAAAACOYmccWgewnjip7uENpIdP14l69"
+RECAPTCHA_PRIVATE_KEY = "6LfCe_EaAAAAAHs8Pqbt3NDBafzbJJyl8oS9bxbi"
+RECAPTCHA_DEFAULT_ACTION = 'generic'
+RECAPTCHA_SCORE_THRESHOLD = 0.5

@@ -27,6 +27,17 @@ from weasyprint import HTML
 import tempfile
 from django.db.models import Sum
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
+from django.http import HttpResponse
+from .models import BlogPost
+
+
+
+
+
+
+
 def index(request):
     data = {
         'title': 'Главная страница'
@@ -115,8 +126,8 @@ def cr_st(request):
     return render(request, 'student/cr_st.html', context)
 
 
-def distribution(request, pk):
-    distribution = Distribution.objects.filter(Q(fk_employee=pk))
+def distribution(request):
+    distribution = Distribution.objects.all()
     return render(request, "distribution/distribution.html", {"distribution": distribution})
 
 def create_distribution(request):
@@ -229,42 +240,6 @@ def create_homework_check(request):
             return redirect('homework_check')
     context = {'form':form}
     return render(request, 'homework_check/create_homework_check.html', context)
-
-
-def information(request):
-    information = Information.objects.all()
-    return render(request, "information/information.html", {"information": information})
-
-def create_information(request):
-    form = InformationForm()
-    if request.method == 'POST':
-        form = InformationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('information')
-    context = {'form':form}
-    return render(request, 'information/create_information.html', context)
-
-def update_information(request, pk):
-    information = Information.objects.get(id=pk)
-
-    form = InformationForm(instance=position)
-
-    if request.method == 'POST':
-        form = InformationForm(request.POST, instance=information)
-        if form.is_valid():
-            form.save()
-            return redirect('information')
-    context = {'form':form}
-
-    return render(request, 'information/update_information.html', context)
-
-def delete_information(request, pk):
-    information = Information.objects.get(id=pk)
-    if request.method == "POST":
-        information.delete()
-        return redirect('information')
-    return render(request, 'information/delete_information.html')
 
 def update_employee(request, pk):
 
@@ -408,6 +383,7 @@ def discipline(request):
     discipline = Discipline.objects.all()
     return render(request, "discipline/discipline.html", {"discipline": discipline})
 
+
 def create_discipline(request):
     form = DisciplineForm()
     if request.method == 'POST':
@@ -548,6 +524,90 @@ def delete_attendance(request, pk):
         attendance.delete()
         return redirect('attendance')
     return render(request, 'attendance/delete_attendance.html')
+
+
+def create_blog_view(request):
+
+	context = {}
+
+	user = request.user
+	if not user.is_authenticated:
+		return redirect('must_authenticate')
+
+	form = CreateBlogPostForm(request.POST or None, request.FILES or None)
+	if form.is_valid():
+		obj = form.save(commit=False)
+		author = User.objects.filter(email=user.email).first()
+		obj.author = author
+		obj.save()
+		form = CreateBlogPostForm()
+
+	context['form'] = form
+
+	return render(request, "information/create_blog.html", context)
+
+
+def detail_blog_view(request, slug):
+
+	context = {}
+
+	blog_post = get_object_or_404(BlogPost, slug=slug)
+	context['blog_post'] = blog_post
+
+	return render(request, 'information/detail_blog.html', context)
+
+
+
+def edit_blog_view(request, slug):
+
+	context = {}
+
+	user = request.user
+	if not user.is_authenticated:
+		return redirect("must_authenticate")
+
+	blog_post = get_object_or_404(BlogPost, slug=slug)
+
+	if blog_post.author != user:
+		return HttpResponse("You are not the author of that post.")
+
+	if request.POST:
+		form = UpdateBlogPostForm(request.POST or None, request.FILES or None, instance=blog_post)
+		if form.is_valid():
+			obj = form.save(commit=False)
+			obj.save()
+			context['success_message'] = "Updated"
+			blog_post = obj
+
+	form = UpdateBlogPostForm(
+			initial = {
+					"title": blog_post.title,
+					"body": blog_post.body,
+					"image": blog_post.image,
+			}
+    )
+
+	context['form'] = form
+	return render(request, 'information/edit_blog.html', context)
+
+
+def get_blog_queryset(query=None):
+	queryset = []
+	queries = query.split(" ") # python install 2019 = [python, install, 2019]
+	for q in queries:
+		posts = BlogPost.objects.filter(
+				Q(title__icontains=q) |
+				Q(body__icontains=q)
+			).distinct()
+
+		for post in posts:
+			queryset.append(post)
+
+	return list(set(queryset))
+
+
+
+
 
 
 def export_excel_attendance(request):

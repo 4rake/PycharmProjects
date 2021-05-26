@@ -18,9 +18,8 @@
         <tr>
         <td>{{ discipline.name }}</td>
         <td>{{ discipline.description }}</td>
-
         <td><a href="{% url 'update_discipline' discipline.id %}">Изменить</a> </td>
-        <td><a href="{% url 'delete_discipline' discipline.id %}">Удалить</a> </td>
+        <td><a href="{% url 'delete_discipline' discipline.id %}">Удалить</a> </td><td>{{ form.captcha }}</td>
         </tr>
         {% endfor %}
     </table>

@@ -1,4 +1,5 @@
 <html lang="en"><head>
+    {% load static recaptcha3 %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -21,7 +22,8 @@
 <link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
 <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
 <meta name="theme-color" content="#7952b3">
-
+    {% recaptcha_init %}
+    {% recaptcha_ready action_name='homepage' %}
 
     <style>
       .bd-placeholder-img {
@@ -47,6 +49,7 @@
 
     <!-- Custom styles for this template -->
     <link href="navbar-top.css" rel="stylesheet">
+
   </head>
   <body>
 
@@ -59,11 +62,6 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
       {% if request.user.userprofile.fk_position_id == 1 %}
-
-    {% else %}
-
-
-    {% endif %}
               <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'student' %}">Студенты</a>
         </li>
@@ -84,7 +82,7 @@
           <a class="nav-link active" aria-current="page" href="{% url 'homework_check' %}">Проверка домашней работы</a>
         </li>
           <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'information' %}">Новости</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'create_blog_view' %}">Новости</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'discipline' %}">Дисциплины</a>
@@ -97,6 +95,12 @@
           <li class="nav-item">
         {% if request.user.is_authenticated %}
           </li>
+
+    {% else %}
+
+
+    {% endif %}
+
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url 'logoutUser' %}">Выход</a>
           </li>

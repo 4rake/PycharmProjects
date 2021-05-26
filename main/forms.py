@@ -7,7 +7,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column
 from django.contrib.admin import widgets
 
-
+from snowpenguin.django.recaptcha3.fields import ReCaptchaField
 
 class StudentForm(ModelForm):
     class Meta:
@@ -68,16 +68,13 @@ class Homework_checkForm(ModelForm):
         model = Homework_check
         fields = ('assessment', 'fk_employee', 'fk_homework', 'fk_student')
 
-class InformationForm(ModelForm):
-    class Meta:
-        model = Information
-        fields = ('title', 'description', 'image',)
-
 
 class DisciplineForm(ModelForm):
+    captcha = ReCaptchaField()
+
     class Meta:
         model = Discipline
-        fields = ('name', 'description',)
+        fields = ('name', 'description', 'captcha',)
 
 
 class DiaryForm(ModelForm):
@@ -86,11 +83,36 @@ class DiaryForm(ModelForm):
         fields = ('fk_student', 'fk_discipline', 'fk_homework_check',)
 
 class CreateUserForm(UserCreationForm):
+
 	class Meta:
 		model = User
-		fields = ['username', 'email', 'password1', 'password2']
+		fields = ['username', 'email', 'password1', 'password2',]
 
 
 class ContactForm(forms.Form):
     subject = forms.CharField(label='Тема', widget=forms.TextInput(attrs={'class':'form-control', "rows": 5}))
     content = forms.CharField(label='Текст', widget=forms.TextInput(attrs={'class':'form-control', "rows": 5}))
+
+class CreateBlogPostForm(forms.ModelForm):
+
+    class Meta:
+        model = BlogPost
+        fields = ['title', 'body', 'image']
+
+class UpdateBlogPostForm(forms.ModelForm):
+
+    class Meta:
+        model = BlogPost
+        fields = ['title', 'body', 'image']
+
+        def save(self, commit=True):
+            blog_post = self.instance
+            blog_post.title = self.cleaned_data['title']
+            blog_post.body = self.cleaned_data['body']
+
+            if self.cleaned_data['image']:
+                blog_post.image = self.cleaned_data['image']
+
+            if commit:
+                blog_post.save()
+            return blog_post
