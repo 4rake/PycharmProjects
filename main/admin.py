@@ -15,6 +15,13 @@ class UserInline(admin.StackedInline):
 class UserAdmin(UserAdmin):
     inlines = (UserInline,)
 
+@admin.register(Access)
+class AccessAdmin(admin.ModelAdmin):
+    fields = ('name', )
+    list_display = ('name', )
+    list_filter = ('name', )
+
+
 @admin.register(Position)
 class PositionAdmin(admin.ModelAdmin):
     fields = ('name', 'salary', )
@@ -27,14 +34,6 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ('name', 'surname', 'middle_name', 'date_of_birth', 'number', 'group', )
     list_filter = ('name', 'surname', 'middle_name', 'date_of_birth', 'number', 'group', )
 
-
-admin.site.register(BlogPost)
-
-@admin.register(Access)
-class AccessAdmin(admin.ModelAdmin):
-    fields = ('name', )
-    list_display = ('name', )
-    list_filter = ('name', )
 
 @admin.register(Diary)
 class DiaryAdmin(admin.ModelAdmin):

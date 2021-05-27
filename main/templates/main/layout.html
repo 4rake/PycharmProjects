@@ -79,10 +79,7 @@
           <a class="nav-link active" aria-current="page" href="{% url 'homework' %}">Домашная работа</a>
         </li>
           <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'homework_check' %}">Проверка домашней работы</a>
-        </li>
-          <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'create_blog_view' %}">Новости</a>
+          <a class="nav-link active" aria-current="page"  href="{% url 'homework_check' %}">Проверка домашней работы</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'discipline' %}">Дисциплины</a>
@@ -120,6 +117,7 @@
             <a class="nav-link active" aria-current="page">Привет,  {{ request.user.username }}</a>
           </li>
       </ul>
+    <img class="rounded-circle" width="50" height="50" src="{{ request.user.userprofile.image.url }}">
       <form class="d-flex">
         <input class="form-control me-2" type="search" placeholder="Поиск..." aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Поиск</button>

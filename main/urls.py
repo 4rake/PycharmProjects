@@ -3,6 +3,7 @@ from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
+from django.conf.urls.i18n import i18n_patterns
 
 
 urlpatterns = [
@@ -13,7 +14,7 @@ urlpatterns = [
     path('loginPage', views.loginPage, name='loginPage'),
     path('logoutUser', views.logoutUser, name='logoutUser'),
     path('auth/', include('rest_framework_social_oauth2.urls')),
-
+    path('i18n/', include('django.conf.urls.i18n')),
     path('student', views.student, name='student'),
     path('cr_st', views.cr_st, name='cr_st'),
     path('update_student/<str:pk>/', views.update_student, name='update_student'),
@@ -95,8 +96,9 @@ urlpatterns = [
 
     path('contact', views.contact, name='contact'),
 
-    path('create_blog_view', views.create_blog_view, name='create_blog_view'),
-    path('detail_blog_view/<str:pk>/', views.detail_blog_view, name='detail_blog_view'),
-    path('edit_blog_view/<str:pk>/', views.edit_blog_view, name='edit_blog_view'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -26,6 +26,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'main',
     'django_filters',
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
@@ -52,6 +53,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -151,6 +153,14 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+gettext = lambda s: s
+LANGUAGES = (
+    ('ru', gettext('Russian')),
+    ('en', gettext('English')),
+)
+
 
 
 # Static files (CSS, JavaScript, Images)

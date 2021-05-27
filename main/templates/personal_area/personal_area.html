@@ -6,21 +6,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="profile-img">
-
-<style>
-img {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 5px;
-  width: 250px;
-    height: 250px;
-    max-height: 250px;
-    min-width: 250px;
-}
-
-</style>
-
-                            <img class="polaroid" src="{{ request.user.userprofile.image.url }}" alt=""/>
+                            <img class="rounded" width="250" height="250" src="{{ request.user.userprofile.image.url }}" alt="Изображение пользователя"/>
                             <br>
                             <br>
                             <br>
