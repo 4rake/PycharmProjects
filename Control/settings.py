@@ -7,20 +7,6 @@ import mimetypes
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(cg47_8n$8(0e58geuuu+r!kli-f2+-lbp*&sue_dzc9j#1$&3'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -65,7 +51,7 @@ ROOT_URLCONF = 'Control.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [os.path.join(BASE_DIR / 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -85,12 +71,7 @@ WSGI_APPLICATION = 'Control.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+
 REST_FRAMEWORK = {
      'DEFAULT_PERMISSION_CLASSES': [
          'rest_framework.permissions.IsAuthenticated',
@@ -196,3 +177,9 @@ RECAPTCHA_PUBLIC_KEY = "6LfCe_EaAAAAACOYmccWgewnjip7uENpIdP14l69"
 RECAPTCHA_PRIVATE_KEY = "6LfCe_EaAAAAAHs8Pqbt3NDBafzbJJyl8oS9bxbi"
 RECAPTCHA_DEFAULT_ACTION = 'generic'
 RECAPTCHA_SCORE_THRESHOLD = 0.5
+
+
+try:
+    from .local_settings import *
+except ImportError:
+    from .prod_settings import *
